@@ -46,12 +46,7 @@ level1endtext1 = font.render('LEVEL   1   C LE A R E D  !', False, (255,0,0))
 level1endtext2 = font.render('Press   x    to  continue', False, (255,0,0))
 scoretext = font.render('Score', False, (255,5,0))
 scoretext = pygame.transform.scale(scoretext, (100,40)) 
-def update_score():
-    scorenumber = font.render(str(score), False, (255,5,0))
-    scorenumber = pygame.transform.scale(scorenumber, (40,40))
-def showscore():
-    global scorenumber
-    screen.blit((scorenumber),(0,0))
+
 def level2():
     lvl2 = 0
     bullets = []
@@ -131,8 +126,6 @@ def level2():
                     bullets.remove(bullet)
                     PurpleBaddies.remove(alien)
                     killcount += 1
-                    add_thirty()
-                    update_score()
                     break
             else:
                 for alien in GreenBaddies[:]:
@@ -140,8 +133,6 @@ def level2():
                         bullets.remove(bullet)
                         GreenBaddies.remove(alien)
                         killcount += 1
-                        add_twenty()
-                        update_score()
                         break
                 else:
                     for alien in RedBaddies[:]:
@@ -149,9 +140,6 @@ def level2():
                             bullets.remove(bullet)
                             RedBaddies.remove(alien)
                             killcount += 1
-                            add_ten()
-                            update_score()
-                            showscore()
                             break
 
         #Alien Drawing -> bullet drawing
