@@ -37,25 +37,55 @@ RedBaddie1 = pygame.transform.scale(RedBaddie1, (35,35))
 GoodGuy = pygame.image.load("Graphics/GoodGuy.png").convert_alpha()
 GoodGuy = pygame.transform.scale(GoodGuy, (40, 30))
 
-bullet_img = pygame.image.load("Graphics/bullet.jpg").convert_alpha()
+bullet_img = pygame.image.load("Graphics2/bullet.jpg").convert_alpha()
 bullet_img = pygame.transform.scale(bullet_img, (5, 5))
+
+shield_img = pygame.image.load("Graphics/shield.jpg").convert_alpha()
+shield_img = pygame.transform.scale(shield_img, (100,100))
 
 SISTARTTEXT = font.render('SPACE INVADERS', False, (255, 0, 0))
 SISTARTTEXT2 = font.render('SHOOT ALIEN   TO   START', False, (255,0,0))
 level1endtext1 = font.render('LEVEL   1   C LE A R E D  !', False, (255,0,0))
 level1endtext2 = font.render('Press   x    to  continue', False, (255,0,0))
-level2endtext1 = font.render("LEVEL   1   C LE A R E D  !", False, (255,0,0))
+level2endtext1 = font.render("LEVEL   2   C LE A R E D  !", False, (255,0,0))
 level2endtext2 = font.render('Press   x    to  continue', False, (255,0,0))
+shieldunlocktext1 = font.render('SHIELD UNLOCKED', False, (255,0,0))
 scoretext = font.render('Score', False, (255,5,0))
 scoretext = pygame.transform.scale(scoretext, (100,40))
+
+def shield():
+    y = 0
+    while y == 0:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        screen.fill('black')
+        screen.blit(shieldunlocktext1, (165, 150))
+        key = pygame.key.get_pressed()
+        if key[pygame.K_x]:
+            level3()
+            y += 1
+
+        pygame.display.update()
+        clock.tick(FPS)
 def level2end():
     y = 0
     while y == 0:
-        screen.blit(level2endtext1, (165,150))
-        screen.blit(level2endtext2, (165,400))
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_x]:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        screen.fill('black')
+        screen.blit(level2endtext1, (165, 150))
+        screen.blit(level2endtext2, (165, 400))
+        key = pygame.key.get_pressed()
+        if key[pygame.K_x]:
             level3()
+            y += 1
+
+        pygame.display.update()
+        clock.tick(FPS)
 
 def level3():
     lvl3 = 0
