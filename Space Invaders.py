@@ -44,8 +44,165 @@ SISTARTTEXT = font.render('SPACE INVADERS', False, (255, 0, 0))
 SISTARTTEXT2 = font.render('SHOOT ALIEN   TO   START', False, (255,0,0))
 level1endtext1 = font.render('LEVEL   1   C LE A R E D  !', False, (255,0,0))
 level1endtext2 = font.render('Press   x    to  continue', False, (255,0,0))
+level2endtext1 = font.render("LEVEL   1   C LE A R E D  !", False, (255,0,0))
+level2endtext2 = font.render('Press   x    to  continue', False, (255,0,0))
 scoretext = font.render('Score', False, (255,5,0))
-scoretext = pygame.transform.scale(scoretext, (100,40)) 
+scoretext = pygame.transform.scale(scoretext, (100,40))
+def level2end():
+    y = 0
+    while y == 0:
+        screen.blit(level2endtext1, (165,150))
+        screen.blit(level2endtext2, (165,400))
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_x]:
+            level3()
+
+def level3():
+    lvl3 = 0
+    bullets = []
+    bullet_speed = -7
+    last_shot = 0
+    shoot_delay = 300
+    badmove1 = 0
+    badmovefunc1 = 0
+    GOODGUYSPEED = 4
+    killcount = 0
+    FPS = 60
+    # Alien Generation
+    PurpleBaddies = []
+    startxp = 107
+    startyp = 105
+    pbycount = 0
+    for i in range(20):
+        PurpleBaddies.append(PurpleBaddie1.get_rect(midtop=(startxp, startyp)))
+        startxp += 62
+        pbycount += 1
+        if pbycount == 10:
+            startyp += 50
+            startxp = 107
+    GreenBaddies = []
+    startxg = 107
+    startyg = 205
+    gbycount = 0
+    for i in range(20):
+        GreenBaddies.append(GreenBaddie1.get_rect(midtop=(startxg, startyg)))
+        startxg += 62
+        gbycount += 1
+        if gbycount == 10:
+            startyg += 50
+            startxg = 107
+    RedBaddies = []
+    startxr = 107
+    startyr = 305
+    rbycount = 0
+    for i in range(20):
+        RedBaddies.append(RedBaddie1.get_rect(midtop=(startxr, startyr)))
+        startxr += 62
+        rbycount += 1
+        if rbycount == 10:
+            startyr += 50
+            startxr = 107
+    while lvl3 == 0:
+
+        # Housekeeping
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        screen.fill("black")
+
+        # GoodGuy Movement
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_d]:
+            GOODGUYSPEED += 4
+        if keys[pygame.K_a]:
+            GOODGUYSPEED -= 4
+
+        # Bullet Generation
+        now = pygame.time.get_ticks()
+        if keys[pygame.K_w] and now - last_shot > shoot_delay:
+            bullets.append(bullet_img.get_rect(midbottom=GoodGuyrect.midtop))
+            last_shot = now
+
+        # Bullet collision / bullet deletion
+        for bullet in bullets[:]:
+            bullet.y += bullet_speed
+            if bullet.bottom < 0:
+                bullets.remove(bullet)
+                continue
+
+            for alien in PurpleBaddies[:]:
+                if alien.colliderect(bullet):
+                    bullets.remove(bullet)
+                    PurpleBaddies.remove(alien)
+                    killcount += 1
+                    break
+            else:
+                for alien in GreenBaddies[:]:
+                    if alien.colliderect(bullet):
+                        bullets.remove(bullet)
+                        GreenBaddies.remove(alien)
+                        killcount += 1
+                        break
+                else:
+                    for alien in RedBaddies[:]:
+                        if alien.colliderect(bullet):
+                            bullets.remove(bullet)
+                            RedBaddies.remove(alien)
+                            killcount += 1
+                            break
+
+        # Alien Drawing -> bullet drawing
+        for alien in PurpleBaddies:
+            screen.blit(PurpleBaddie1, alien)
+        for alien in GreenBaddies:
+            screen.blit(GreenBaddie1, alien)
+        for alien in RedBaddies:
+            screen.blit(RedBaddie1, alien)
+        for bullet in bullets:
+            screen.blit(bullet_img, bullet)
+        GoodGuyrect = GoodGuy.get_rect(topleft=(GOODGUYSPEED, 670))
+        screen.blit(GoodGuy, GoodGuyrect)
+        screen.blit(scoretext, (0, 0))
+
+        # Alien Movement
+        badmove1 += 1
+        if badmove1 % 120 == 0:
+            if badmovefunc1 == 0:
+                badmovefunc1 = 1
+                for alien in PurpleBaddies:
+                    alien.x += 30
+                for alien in GreenBaddies:
+                    alien.x += 30
+                for alien in RedBaddies:
+                    alien.x += 30
+            elif badmovefunc1 == 1:
+                badmovefunc1 = 2
+                for alien in PurpleBaddies:
+                    alien.y += 30
+                for alien in GreenBaddies:
+                    alien.y += 30
+                for alien in RedBaddies:
+                    alien.y += 30
+            elif badmovefunc1 == 2:
+                badmovefunc1 = 3
+                for alien in PurpleBaddies:
+                    alien.x -= 30
+                for alien in GreenBaddies:
+                    alien.x -= 30
+                for alien in RedBaddies:
+                    alien.x -= 30
+            elif badmovefunc1 == 3:
+                badmovefunc1 = 0
+                for alien in PurpleBaddies:
+                    alien.y -= 30
+                for alien in GreenBaddies:
+                    alien.y -= 30
+                for alien in RedBaddies:
+                    alien.y -= 30
+        pygame.display.update()
+        clock.tick(FPS)
+
 
 def level2():
     lvl2 = 0
@@ -106,7 +263,7 @@ def level2():
         if keys[pygame.K_d]:
             GOODGUYSPEED += 4
         if keys[pygame.K_a]:
-            GOODGUYSPEED -=4
+            GOODGUYSPEED -= 4
         
         #Bullet Generation
         now = pygame.time.get_ticks()
@@ -190,6 +347,9 @@ def level2():
                     alien.y -= 30
                 for alien in RedBaddies:
                     alien.y -= 30
+        if killcount == 60:
+            lvl2 += 1
+            level2end()
         pygame.display.update()
         clock.tick(FPS)
 
@@ -520,7 +680,7 @@ def level1():
         for bullet in bullets:
             screen.blit(bullet_img, bullet)
 
-        if killcount == 2:
+        if killcount == 60:
             level1end()
             yy += 1
         pygame.display.update()
