@@ -1,24 +1,35 @@
-import pygame
 from sys import exit
-
+import pygame
 pygame.init()
 clock = pygame.time.Clock()
-
 WIDTH, HEIGHT = 800, 700
 FPS = 60
-score = 20
-def add_ten():
-    global score
-    score += 10
-def add_twenty():
-    global score 
-    score += 20
-def add_thirty():
-    global score
-    score += 30
-def print_score():
-    global score
-    print(score)
+
+score = 0
+
+BLOCK_SIZE = 9
+bunkers = []
+
+shape = [
+    "   XXXX   ",
+    "  XXXXXX  ",
+    " XXXXXXXX ",
+    "XXXXXXXXXX",
+    "XXX    XXX",
+    "XX      XX"
+]
+
+for start_x in [80, 260, 440, 620]:
+    for row, line in enumerate(shape):
+        for col, char in enumerate(line):
+            if char == "X":
+                block = pygame.Rect(
+                    start_x + col * BLOCK_SIZE,
+                    520 + row * BLOCK_SIZE,
+                    BLOCK_SIZE,
+                    BLOCK_SIZE
+                )
+                bunkers.append(block)
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space Invaders")
@@ -37,11 +48,11 @@ RedBaddie1 = pygame.transform.scale(RedBaddie1, (35,35))
 GoodGuy = pygame.image.load("Graphics/GoodGuy.png").convert_alpha()
 GoodGuy = pygame.transform.scale(GoodGuy, (40, 30))
 
-bullet_img = pygame.image.load("Graphics2/bullet.jpg").convert_alpha()
+bullet_img = pygame.image.load("Graphics/bullet.jpg").convert_alpha()
 bullet_img = pygame.transform.scale(bullet_img, (5, 5))
 
-shield_img = pygame.image.load("Graphics/shield.jpg").convert_alpha()
-shield_img = pygame.transform.scale(shield_img, (100,100))
+shield_img = pygame.image.load("Graphics/shield.jpeg").convert_alpha()
+shield_img = pygame.transform.scale(shield_img, (80,65))
 
 SISTARTTEXT = font.render('SPACE INVADERS', False, (255, 0, 0))
 SISTARTTEXT2 = font.render('SHOOT ALIEN   TO   START', False, (255,0,0))
@@ -49,9 +60,427 @@ level1endtext1 = font.render('LEVEL   1   C LE A R E D  !', False, (255,0,0))
 level1endtext2 = font.render('Press   x    to  continue', False, (255,0,0))
 level2endtext1 = font.render("LEVEL   2   C LE A R E D  !", False, (255,0,0))
 level2endtext2 = font.render('Press   x    to  continue', False, (255,0,0))
-shieldunlocktext1 = font.render('SHIELD UNLOCKED', False, (255,0,0))
-scoretext = font.render('Score', False, (255,5,0))
-scoretext = pygame.transform.scale(scoretext, (100,40))
+level3endtext1 = font.render('LEVEL   3   C LE A R E D  !', False, (255,0,0))
+shieldunlocktext1 = font.render('SHIELD   UNLOCKED', False, (255,0,0))
+shieldunlocktext2 = font.render("Press   z   to  continue", False, (255,0,0))
+shootbacktext = font.render("ALIEN   ATTACK   UNLOCKED", False, (255,0,0))
+yourbad = font.render("YOU   DIED", False, (255,0,0))
+yourbad2 = font.render("Press   Z   TO RESTART", False, (255,0,0))
+leveltext = font.render('LEVEL', False, (255,5,0))
+leveltext = pygame.transform.scale(leveltext, (100,40))
+def level4():
+    import random
+
+    # === Game variables ===
+    lvl3 = 0
+    bullets = []
+    bullet_speed = -7
+    last_shot = 0
+    shoot_delay = 300
+    badmove1 = 0
+    badmovefunc1 = 0
+    GOODGUYSPEED = 4
+    killcount = 0
+    FPS = 60
+
+    # Alien shooting
+    alien_bullets = []
+    ALIEN_BULLET_SPEED = 5  # moves downward
+    alien_shoot_delay = 1000  # ms
+    last_alien_shot = 0
+    alien_bullet_img = pygame.Surface((5, 10))
+    alien_bullet_img.fill((255, 255, 255))
+
+    # === Alien Generation ===
+    PurpleBaddies, GreenBaddies, RedBaddies = [], [], []
+
+    # Purple
+    startxp, startyp, pbycount = 107, 105, 0
+    for i in range(20):
+        PurpleBaddies.append(PurpleBaddie1.get_rect(midtop=(startxp, startyp)))
+        startxp += 62
+        pbycount += 1
+        if pbycount == 10:
+            startyp += 50
+            startxp = 107
+
+    # Green
+    startxg, startyg, gbycount = 107, 205, 0
+    for i in range(20):
+        GreenBaddies.append(GreenBaddie1.get_rect(midtop=(startxg, startyg)))
+        startxg += 62
+        gbycount += 1
+        if gbycount == 10:
+            startyg += 50
+            startxg = 107
+
+    # Red
+    startxr, startyr, rbycount = 107, 305, 0
+    for i in range(20):
+        RedBaddies.append(RedBaddie1.get_rect(midtop=(startxr, startyr)))
+        startxr += 62
+        rbycount += 1
+        if rbycount == 10:
+            startyr += 50
+            startxr = 107
+
+    while lvl3 == 0:
+        screen.fill("black")
+
+        # === Housekeeping ===
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_d]:
+            GOODGUYSPEED += 4
+        if keys[pygame.K_a]:
+            GOODGUYSPEED -= 4
+
+        # === Player shooting ===
+        now = pygame.time.get_ticks()
+        GoodGuyrect = GoodGuy.get_rect(topleft=(GOODGUYSPEED, 670))
+        if keys[pygame.K_w] and now - last_shot > shoot_delay:
+            bullets.append(bullet_img.get_rect(midbottom=GoodGuyrect.midtop))
+            last_shot = now
+
+        # === Player bullets ===
+        for bullet in bullets[:]:
+            bullet.y += bullet_speed
+            if bullet.bottom < 0:
+                bullets.remove(bullet)
+                continue
+
+            # Bunker collision
+            for block in bunkers[:]:
+                if block.colliderect(bullet):
+                    bullets.remove(bullet)
+                    bunkers.remove(block)
+                    break
+
+            # Alien collision
+            for alien_list in [PurpleBaddies, GreenBaddies, RedBaddies]:
+                for alien in alien_list[:]:
+                    if alien.colliderect(bullet):
+                        bullets.remove(bullet)
+                        alien_list.remove(alien)
+                        killcount += 1
+                        break
+                else:
+                    continue
+                break
+
+        # === Alien shooting ===
+        if now - last_alien_shot > alien_shoot_delay and (PurpleBaddies or GreenBaddies or RedBaddies):
+            all_aliens = PurpleBaddies + GreenBaddies + RedBaddies
+            shooter = random.choice(all_aliens)
+            alien_bullets.append(pygame.Rect(shooter.centerx, shooter.bottom, 5, 10))
+            last_alien_shot = now
+
+        # === Alien bullets ===
+        for bullet in alien_bullets[:]:
+            bullet.y += ALIEN_BULLET_SPEED
+            if bullet.top > HEIGHT:
+                alien_bullets.remove(bullet)
+                continue
+
+            # Player collision
+            if bullet.colliderect(GoodGuyrect):
+                alien_bullets.remove(bullet)
+                looser()
+                # handle player life/game over here
+
+            # Bunker collision
+            for block in bunkers[:]:
+                if block.colliderect(bullet):
+                    alien_bullets.remove(bullet)
+                    bunkers.remove(block)
+                    break
+
+        # === Draw bunkers ===
+        for block in bunkers:
+            pygame.draw.rect(screen, (0, 255, 0), block)
+
+        # === Draw aliens ===
+        for alien in PurpleBaddies:
+            screen.blit(PurpleBaddie1, alien)
+        for alien in GreenBaddies:
+            screen.blit(GreenBaddie1, alien)
+        for alien in RedBaddies:
+            screen.blit(RedBaddie1, alien)
+
+        # === Draw bullets ===
+        for bullet in bullets:
+            screen.blit(bullet_img, bullet)
+        for bullet in alien_bullets:
+            screen.blit(alien_bullet_img, bullet)
+
+        # === Draw player ===
+        screen.blit(GoodGuy, GoodGuyrect)
+        screen.blit(leveltext, (0, 0))
+        # === Alien movement ===
+        badmove1 += 1
+        if badmove1 % 120 == 0:
+            if badmovefunc1 == 0:
+                badmovefunc1 = 1
+                for alien_list in [PurpleBaddies, GreenBaddies, RedBaddies]:
+                    for alien in alien_list:
+                        alien.x += 30
+            elif badmovefunc1 == 1:
+                badmovefunc1 = 2
+                for alien_list in [PurpleBaddies, GreenBaddies, RedBaddies]:
+                    for alien in alien_list:
+                        alien.y += 30
+            elif badmovefunc1 == 2:
+                badmovefunc1 = 3
+                for alien_list in [PurpleBaddies, GreenBaddies, RedBaddies]:
+                    for alien in alien_list:
+                        alien.x -= 30
+            elif badmovefunc1 == 3:
+                badmovefunc1 = 0
+                for alien_list in [PurpleBaddies, GreenBaddies, RedBaddies]:
+                    for alien in alien_list:
+                        alien.y -= 30
+
+        if killcount == 2:
+            level3end()
+            lvl3 += 1
+
+        pygame.display.update()
+        clock.tick(FPS)
+def looser():
+    y = 0
+    while y == 0:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        keys = pygame.key.get_pressed()
+        screen.fill("black")
+        screen.blit(yourbad, (275,200))
+        screen.blit(yourbad2, (175,500))
+        if keys[pygame.K_z]:
+            level1()
+            y += 1
+        pygame.display.update()
+        clock.tick(FPS)
+def level3end():
+    y = 0
+    while y == 0:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        keys = pygame.key.get_pressed()
+        screen.fill("black")
+        screen.blit(level3endtext1, (165, 150))
+        screen.blit(level2endtext2, (165, 400))
+        if keys[pygame.K_z]:
+            y += 1
+        pygame.display.update()
+        clock.tick(FPS)
+def level3():
+    import random
+
+    # === Game variables ===
+    lvl3 = 0
+    bullets = []
+    bullet_speed = -7
+    last_shot = 0
+    shoot_delay = 300
+    badmove1 = 0
+    badmovefunc1 = 0
+    GOODGUYSPEED = 4
+    killcount = 0
+    FPS = 60
+
+    # Alien shooting
+    alien_bullets = []
+    ALIEN_BULLET_SPEED = 5  # moves downward
+    alien_shoot_delay = 1000  # ms
+    last_alien_shot = 0
+    alien_bullet_img = pygame.Surface((5, 10))
+    alien_bullet_img.fill((255, 255, 255))
+
+    # === Alien Generation ===
+    PurpleBaddies, GreenBaddies, RedBaddies = [], [], []
+
+    # Purple
+    startxp, startyp, pbycount = 107, 105, 0
+    for i in range(20):
+        PurpleBaddies.append(PurpleBaddie1.get_rect(midtop=(startxp, startyp)))
+        startxp += 62
+        pbycount += 1
+        if pbycount == 10:
+            startyp += 50
+            startxp = 107
+
+    # Green
+    startxg, startyg, gbycount = 107, 205, 0
+    for i in range(20):
+        GreenBaddies.append(GreenBaddie1.get_rect(midtop=(startxg, startyg)))
+        startxg += 62
+        gbycount += 1
+        if gbycount == 10:
+            startyg += 50
+            startxg = 107
+
+    # Red
+    startxr, startyr, rbycount = 107, 305, 0
+    for i in range(20):
+        RedBaddies.append(RedBaddie1.get_rect(midtop=(startxr, startyr)))
+        startxr += 62
+        rbycount += 1
+        if rbycount == 10:
+            startyr += 50
+            startxr = 107
+
+    while lvl3 == 0:
+        screen.fill("black")
+
+        # === Housekeeping ===
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_d]:
+            GOODGUYSPEED += 4
+        if keys[pygame.K_a]:
+            GOODGUYSPEED -= 4
+
+        # === Player shooting ===
+        now = pygame.time.get_ticks()
+        GoodGuyrect = GoodGuy.get_rect(topleft=(GOODGUYSPEED, 670))
+        if keys[pygame.K_w] and now - last_shot > shoot_delay:
+            bullets.append(bullet_img.get_rect(midbottom=GoodGuyrect.midtop))
+            last_shot = now
+
+        # === Player bullets ===
+        for bullet in bullets[:]:
+            bullet.y += bullet_speed
+            if bullet.bottom < 0:
+                bullets.remove(bullet)
+                continue
+
+            # Bunker collision
+            for block in bunkers[:]:
+                if block.colliderect(bullet):
+                    bullets.remove(bullet)
+                    bunkers.remove(block)
+                    break
+
+            # Alien collision
+            for alien_list in [PurpleBaddies, GreenBaddies, RedBaddies]:
+                for alien in alien_list[:]:
+                    if alien.colliderect(bullet):
+                        bullets.remove(bullet)
+                        alien_list.remove(alien)
+                        killcount += 1
+                        break
+                else:
+                    continue
+                break
+
+        # === Alien shooting ===
+        if now - last_alien_shot > alien_shoot_delay and (PurpleBaddies or GreenBaddies or RedBaddies):
+            all_aliens = PurpleBaddies + GreenBaddies + RedBaddies
+            shooter = random.choice(all_aliens)
+            alien_bullets.append(pygame.Rect(shooter.centerx, shooter.bottom, 5, 10))
+            last_alien_shot = now
+
+        # === Alien bullets ===
+        for bullet in alien_bullets[:]:
+            bullet.y += ALIEN_BULLET_SPEED
+            if bullet.top > HEIGHT:
+                alien_bullets.remove(bullet)
+                continue
+
+            # Player collision
+            if bullet.colliderect(GoodGuyrect):
+                alien_bullets.remove(bullet)
+                looser()
+                # handle player life/game over here
+
+            # Bunker collision
+            for block in bunkers[:]:
+                if block.colliderect(bullet):
+                    alien_bullets.remove(bullet)
+                    bunkers.remove(block)
+                    break
+
+        # === Draw bunkers ===
+        for block in bunkers:
+            pygame.draw.rect(screen, (0, 255, 0), block)
+
+        # === Draw aliens ===
+        for alien in PurpleBaddies:
+            screen.blit(PurpleBaddie1, alien)
+        for alien in GreenBaddies:
+            screen.blit(GreenBaddie1, alien)
+        for alien in RedBaddies:
+            screen.blit(RedBaddie1, alien)
+
+        # === Draw bullets ===
+        for bullet in bullets:
+            screen.blit(bullet_img, bullet)
+        for bullet in alien_bullets:
+            screen.blit(alien_bullet_img, bullet)
+
+        # === Draw player ===
+        screen.blit(GoodGuy, GoodGuyrect)
+        screen.blit(leveltext, (0, 0))
+
+        # === Alien movement ===
+        badmove1 += 1
+        if badmove1 % 120 == 0:
+            if badmovefunc1 == 0:
+                badmovefunc1 = 1
+                for alien_list in [PurpleBaddies, GreenBaddies, RedBaddies]:
+                    for alien in alien_list:
+                        alien.x += 30
+            elif badmovefunc1 == 1:
+                badmovefunc1 = 2
+                for alien_list in [PurpleBaddies, GreenBaddies, RedBaddies]:
+                    for alien in alien_list:
+                        alien.y += 30
+            elif badmovefunc1 == 2:
+                badmovefunc1 = 3
+                for alien_list in [PurpleBaddies, GreenBaddies, RedBaddies]:
+                    for alien in alien_list:
+                        alien.x -= 30
+            elif badmovefunc1 == 3:
+                badmovefunc1 = 0
+                for alien_list in [PurpleBaddies, GreenBaddies, RedBaddies]:
+                    for alien in alien_list:
+                        alien.y -= 30
+
+        if killcount == 2:
+            level3end()
+            lvl3 += 1
+
+        pygame.display.update()
+        clock.tick(FPS)
+def shootback():
+    y = 0
+    while y == 0:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        screen.fill('black')
+        screen.blit(shootbacktext,(100,150))
+        screen.blit(level2endtext2,(165,400))
+        key = pygame.key.get_pressed()
+        if key[pygame.K_x]:
+            level3()
+            y += 1
+
+        pygame.display.update()
+        clock.tick(FPS)
 
 def shield():
     y = 0
@@ -61,10 +490,12 @@ def shield():
                 pygame.quit()
                 exit()
         screen.fill('black')
-        screen.blit(shieldunlocktext1, (165, 150))
+        screen.blit(shieldunlocktext1, (200, 150))
+        screen.blit(shield_img, (350,350))
+        screen.blit(shieldunlocktext2, (165, 500))
         key = pygame.key.get_pressed()
-        if key[pygame.K_x]:
-            level3()
+        if key[pygame.K_z]:
+            shootback()
             y += 1
 
         pygame.display.update()
@@ -81,159 +512,11 @@ def level2end():
         screen.blit(level2endtext2, (165, 400))
         key = pygame.key.get_pressed()
         if key[pygame.K_x]:
-            level3()
+            shield()
             y += 1
 
         pygame.display.update()
         clock.tick(FPS)
-
-def level3():
-    lvl3 = 0
-    bullets = []
-    bullet_speed = -7
-    last_shot = 0
-    shoot_delay = 300
-    badmove1 = 0
-    badmovefunc1 = 0
-    GOODGUYSPEED = 4
-    killcount = 0
-    FPS = 60
-    # Alien Generation
-    PurpleBaddies = []
-    startxp = 107
-    startyp = 105
-    pbycount = 0
-    for i in range(20):
-        PurpleBaddies.append(PurpleBaddie1.get_rect(midtop=(startxp, startyp)))
-        startxp += 62
-        pbycount += 1
-        if pbycount == 10:
-            startyp += 50
-            startxp = 107
-    GreenBaddies = []
-    startxg = 107
-    startyg = 205
-    gbycount = 0
-    for i in range(20):
-        GreenBaddies.append(GreenBaddie1.get_rect(midtop=(startxg, startyg)))
-        startxg += 62
-        gbycount += 1
-        if gbycount == 10:
-            startyg += 50
-            startxg = 107
-    RedBaddies = []
-    startxr = 107
-    startyr = 305
-    rbycount = 0
-    for i in range(20):
-        RedBaddies.append(RedBaddie1.get_rect(midtop=(startxr, startyr)))
-        startxr += 62
-        rbycount += 1
-        if rbycount == 10:
-            startyr += 50
-            startxr = 107
-    while lvl3 == 0:
-
-        # Housekeeping
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-        screen.fill("black")
-
-        # GoodGuy Movement
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_d]:
-            GOODGUYSPEED += 4
-        if keys[pygame.K_a]:
-            GOODGUYSPEED -= 4
-
-        # Bullet Generation
-        now = pygame.time.get_ticks()
-        if keys[pygame.K_w] and now - last_shot > shoot_delay:
-            bullets.append(bullet_img.get_rect(midbottom=GoodGuyrect.midtop))
-            last_shot = now
-
-        # Bullet collision / bullet deletion
-        for bullet in bullets[:]:
-            bullet.y += bullet_speed
-            if bullet.bottom < 0:
-                bullets.remove(bullet)
-                continue
-
-            for alien in PurpleBaddies[:]:
-                if alien.colliderect(bullet):
-                    bullets.remove(bullet)
-                    PurpleBaddies.remove(alien)
-                    killcount += 1
-                    break
-            else:
-                for alien in GreenBaddies[:]:
-                    if alien.colliderect(bullet):
-                        bullets.remove(bullet)
-                        GreenBaddies.remove(alien)
-                        killcount += 1
-                        break
-                else:
-                    for alien in RedBaddies[:]:
-                        if alien.colliderect(bullet):
-                            bullets.remove(bullet)
-                            RedBaddies.remove(alien)
-                            killcount += 1
-                            break
-
-        # Alien Drawing -> bullet drawing
-        for alien in PurpleBaddies:
-            screen.blit(PurpleBaddie1, alien)
-        for alien in GreenBaddies:
-            screen.blit(GreenBaddie1, alien)
-        for alien in RedBaddies:
-            screen.blit(RedBaddie1, alien)
-        for bullet in bullets:
-            screen.blit(bullet_img, bullet)
-        GoodGuyrect = GoodGuy.get_rect(topleft=(GOODGUYSPEED, 670))
-        screen.blit(GoodGuy, GoodGuyrect)
-        screen.blit(scoretext, (0, 0))
-
-        # Alien Movement
-        badmove1 += 1
-        if badmove1 % 120 == 0:
-            if badmovefunc1 == 0:
-                badmovefunc1 = 1
-                for alien in PurpleBaddies:
-                    alien.x += 30
-                for alien in GreenBaddies:
-                    alien.x += 30
-                for alien in RedBaddies:
-                    alien.x += 30
-            elif badmovefunc1 == 1:
-                badmovefunc1 = 2
-                for alien in PurpleBaddies:
-                    alien.y += 30
-                for alien in GreenBaddies:
-                    alien.y += 30
-                for alien in RedBaddies:
-                    alien.y += 30
-            elif badmovefunc1 == 2:
-                badmovefunc1 = 3
-                for alien in PurpleBaddies:
-                    alien.x -= 30
-                for alien in GreenBaddies:
-                    alien.x -= 30
-                for alien in RedBaddies:
-                    alien.x -= 30
-            elif badmovefunc1 == 3:
-                badmovefunc1 = 0
-                for alien in PurpleBaddies:
-                    alien.y -= 30
-                for alien in GreenBaddies:
-                    alien.y -= 30
-                for alien in RedBaddies:
-                    alien.y -= 30
-        pygame.display.update()
-        clock.tick(FPS)
-
-
 def level2():
     lvl2 = 0
     bullets = []
@@ -245,7 +528,8 @@ def level2():
     GOODGUYSPEED = 4
     killcount = 0
     FPS = 60
-     # Alien Generation
+    MOVEON = 2
+    # Alien Generation
     PurpleBaddies = []
     startxp = 107
     startyp = 105
@@ -294,13 +578,13 @@ def level2():
             GOODGUYSPEED += 4
         if keys[pygame.K_a]:
             GOODGUYSPEED -= 4
-        
+
         #Bullet Generation
         now = pygame.time.get_ticks()
         if keys[pygame.K_w] and now - last_shot > shoot_delay:
             bullets.append(bullet_img.get_rect(midbottom=GoodGuyrect.midtop))
             last_shot = now
-        
+
         #Bullet collision / bullet deletion
         for bullet in bullets[:]:
             bullet.y += bullet_speed
@@ -340,7 +624,7 @@ def level2():
             screen.blit(bullet_img, bullet)
         GoodGuyrect = GoodGuy.get_rect(topleft=(GOODGUYSPEED, 670))
         screen.blit(GoodGuy,GoodGuyrect)
-        screen.blit(scoretext, (0,0))
+        screen.blit(leveltext, (0,0))
 
         #Alien Movement
         badmove1 += 1
@@ -377,7 +661,7 @@ def level2():
                     alien.y -= 30
                 for alien in RedBaddies:
                     alien.y -= 30
-        if killcount == 60:
+        if killcount == MOVEON:
             lvl2 += 1
             level2end()
         pygame.display.update()
@@ -397,12 +681,13 @@ def level1end():
         if key[pygame.K_x]:
             level2()
             y += 1
-            
+
         pygame.display.update()
         clock.tick(FPS)
 
 
 def level1():
+    MOVEON = 2
     GoodGuyrect = GoodGuy.get_rect(topleft=(0, 670))
     PurpleBaddie1rect = PurpleBaddie1.get_rect(midtop=(107,105))
     PurpleBaddie2rect = PurpleBaddie1.get_rect(midtop=(169,105))
@@ -484,7 +769,7 @@ def level1():
                 PurpleBaddie1rect.x += 99999
             elif PurpleBaddie2rect.colliderect(bullet):
                 bullets.remove(bullet)
-                killcount += 1  
+                killcount += 1
                 PurpleBaddie2rect.x += 99999
             elif PurpleBaddie3rect.colliderect(bullet):
                 bullets.remove(bullet)
@@ -559,7 +844,7 @@ def level1():
                 killcount += 1
                 PurpleBaddie20rect.x += 99999
             for alien in GreenBaddies[:]:
-                 if alien.colliderect(bullet):
+                if alien.colliderect(bullet):
                     bullets.remove(bullet)
                     GreenBaddies.remove(alien)
                     killcount += 1
@@ -569,9 +854,8 @@ def level1():
                     bullets.remove(bullet)
                     RedBaddies.remove(alien)
                     killcount += 1
-                    add_ten()
                     break
-            
+
         screen.fill("black")
         screen.blit(GoodGuy, GoodGuyrect)
         screen.blit(PurpleBaddie1, PurpleBaddie1rect)
@@ -598,7 +882,7 @@ def level1():
             screen.blit(GreenBaddie1, alien)
         for alien in RedBaddies:
             screen.blit(RedBaddie1, alien)
-        screen.blit(scoretext, (10,5))
+        screen.blit(leveltext, (10,5))
 
         badmove1 += 1
         if badmove1 % 120 == 0:
@@ -681,7 +965,7 @@ def level1():
                 for alien in RedBaddies:
                     alien.x -= 20
             elif badmovefunc1 == 3:
-                badmovefunc1 = 0 
+                badmovefunc1 = 0
                 PurpleBaddie1rect.y += 20
                 PurpleBaddie2rect.y += 20
                 PurpleBaddie3rect.y += 20
@@ -710,7 +994,7 @@ def level1():
         for bullet in bullets:
             screen.blit(bullet_img, bullet)
 
-        if killcount == 60:
+        if killcount == MOVEON:
             level1end()
             yy += 1
         pygame.display.update()
