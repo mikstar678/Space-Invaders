@@ -70,18 +70,50 @@ level2endtext1 = font.render("LEVEL   2   C LE A R E D  !", False, (255,0,0))
 level2endtext2 = font.render('Press   x    to  continue', False, (255,0,0))
 level3endtext1 = font.render('LEVEL   3   C LE A R E D  !', False, (255,0,0))
 level4endtext1 = font.render('LEVEL   4   C LE A R E D  !', False, (255,0,0))
+level5endtext1 = font.render('LEVEL   5   C LE A R E D  !', False, (255,0,0))
 shieldunlocktext1 = font.render('SHIELD   UNLOCKED', False, (255,0,0))
 shieldunlocktext2 = font.render("Press   z   to  continue", False, (255,0,0))
 shootbacktext = font.render("ALIEN   ATTACK   UNLOCKED", False, (255,0,0))
+bigalientext1 = font.render("MYSTERY   ALIEN   UNLOCKED", False, (255,0,0))
 yourbad = font.render("YOU   DIED", False, (255,0,0))
 yourbad2 = font.render("Press   Z   TO RESTART", False, (255,0,0))
 leveltext = font.render('LEVEL ', False, (255,5,0))
 leveltext = pygame.transform.scale(leveltext, (100,40))
+def homepageunlocked():
+    y = 0
+    while y == 0:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        keys = pygame.key.get_pressed()
+        screen.fill("black")
+        if keys[pygame.K_x]:
+            level5()
+            y += 1
+        pygame.display.update()
+        clock.tick(FPS)
+def level5end():
+    y = 0
+    while y == 0:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        keys = pygame.key.get_pressed()
+        screen.fill("black")
+        screen.blit(level2endtext2, (165, 400))
+        screen.blit(level5endtext1, (165, 100))
+        if keys[pygame.K_x]:
+            level5()
+            y += 1
+        pygame.display.update()
+        clock.tick(FPS)
 def level5():
     import random
 
     # === Game variables ===
-    lvl3 = 0
+    lvl5 = 0
     bullets = []
     bullet_speed = -7
     last_shot = 0
@@ -109,22 +141,6 @@ def level5():
 
     #Big Alien
     now = pygame.time.get_ticks()
-
-    if not big_alien_active and now - last_big_alien > big_alien_delay:
-        big_alien_active = True
-        big_alien_rect.x = -100  # start from left
-        last_big_alien = now
-    if big_alien_active:
-        big_alien_rect.x += big_alien_speed
-
-        if big_alien_rect.left > WIDTH:
-            big_alien_active = False
-    if big_alien_active:
-        screen.blit(BIGALIEN, big_alien_rect)
-    if big_alien_active and big_alien_rect.colliderect(bullet):
-        bullets.remove(bullet)
-        big_alien_active = False
-        killcount += 5  # or give big score
     # Purple
     startxp, startyp, pbycount = 107, 105, 0
     for i in range(20):
@@ -155,7 +171,7 @@ def level5():
             startyr += 50
             startxr = 107
 
-    while lvl3 == 0:
+    while lvl5 == 0:
         screen.fill("black")
 
         # === Housekeeping ===
@@ -170,9 +186,24 @@ def level5():
         if keys[pygame.K_a]:
             GOODGUYSPEED -= 4
 
-        # === Player shooting ===
         now = pygame.time.get_ticks()
+
+        # === BIG ALIEN SPAWN ===
+        if not big_alien_active and now - last_big_alien > big_alien_delay:
+            big_alien_active = True
+            big_alien_rect.x = -100
+            last_big_alien = now
+
+        # === BIG ALIEN MOVE ===
+        if big_alien_active:
+            big_alien_rect.x += big_alien_speed
+            if big_alien_rect.left > WIDTH:
+                big_alien_active = False
+
+        # === Player ===
         GoodGuyrect = GoodGuy.get_rect(topleft=(GOODGUYSPEED, 670))
+
+        # === Player shooting ===
         if keys[pygame.K_w] and now - last_shot > shoot_delay:
             bullets.append(bullet_img.get_rect(midbottom=GoodGuyrect.midtop))
             last_shot = now
@@ -180,8 +211,16 @@ def level5():
         # === Player bullets ===
         for bullet in bullets[:]:
             bullet.y += bullet_speed
+
             if bullet.bottom < 0:
                 bullets.remove(bullet)
+                continue
+
+            #  BIG ALIEN HIT (FIXED LOCATION)
+            if big_alien_active and big_alien_rect.colliderect(bullet):
+                bullets.remove(bullet)
+                big_alien_active = False
+                killcount += 5
                 continue
 
             # Bunker collision
@@ -213,17 +252,15 @@ def level5():
         # === Alien bullets ===
         for bullet in alien_bullets[:]:
             bullet.y += ALIEN_BULLET_SPEED
+
             if bullet.top > HEIGHT:
                 alien_bullets.remove(bullet)
                 continue
 
-            # Player collision
             if bullet.colliderect(GoodGuyrect):
                 alien_bullets.remove(bullet)
                 looser()
-                # handle player life/game over here
 
-            # Bunker collision
             for block in bunkers[:]:
                 if block.colliderect(bullet):
                     alien_bullets.remove(bullet)
@@ -242,6 +279,10 @@ def level5():
         for alien in RedBaddies:
             screen.blit(RedBaddie1, alien)
 
+        # === Draw BIG ALIEN ===
+        if big_alien_active:
+            screen.blit(BIGALIEN, big_alien_rect)
+
         # === Draw bullets ===
         for bullet in bullets:
             screen.blit(bullet_img, bullet)
@@ -251,8 +292,9 @@ def level5():
         # === Draw player ===
         screen.blit(GoodGuy, GoodGuyrect)
         screen.blit(leveltext, (10, 0))
-        screen.blit(four, (110, 0))
-        # === Alien movement ===
+        screen.blit(five, (110, 0))
+
+        # === Alien movement (unchanged) ===
         badmove1 += 1
         if badmove1 % 120 == 0:
             if badmovefunc1 == 0:
@@ -277,11 +319,14 @@ def level5():
                         alien.y -= 30
 
         if killcount == 2:
-            level4end()
-            lvl3 += 1
+            level5end()
+            lvl5 += 1
 
         pygame.display.update()
         clock.tick(FPS)
+
+    pygame.display.update()
+    clock.tick(FPS)
 def bigalien():
     y = 0
     while y == 0:
@@ -291,6 +336,8 @@ def bigalien():
                 exit()
         keys = pygame.key.get_pressed()
         screen.fill("black")
+        screen.blit(bigalientext1,(125, 100))
+        screen.blit(shieldunlocktext2, (165,400))
         if keys[pygame.K_z]:
             level5()
             y += 1
@@ -1297,7 +1344,3 @@ while begin == 0:
 
     pygame.display.update()
     clock.tick(FPS)
-
-
-
-
