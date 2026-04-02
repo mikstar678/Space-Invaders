@@ -75,10 +75,25 @@ shieldunlocktext1 = font.render('SHIELD   UNLOCKED', False, (255,0,0))
 shieldunlocktext2 = font.render("Press   z   to  continue", False, (255,0,0))
 shootbacktext = font.render("ALIEN   ATTACK   UNLOCKED", False, (255,0,0))
 bigalientext1 = font.render("MYSTERY   ALIEN   UNLOCKED", False, (255,0,0))
+homepageunlockedtext1 = font.render("YOU   HAVE UNLOCKED   THE HOMEPAGE", False, (255,0,0))
+homepageunlockedtext2 = font.render("ENJOY   A   PROPER   UI", False, (255,0,0))
 yourbad = font.render("YOU   DIED", False, (255,0,0))
 yourbad2 = font.render("Press   Z   TO RESTART", False, (255,0,0))
 leveltext = font.render('LEVEL ', False, (255,5,0))
 leveltext = pygame.transform.scale(leveltext, (100,40))
+def homepage():
+    y = 0
+    while y == 0:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        keys = pygame.key.get_pressed()
+        screen.fill("black")
+        if keys[pygame.K_p]:
+            y += 1
+        pygame.display.update()
+        clock.tick(FPS)
 def homepageunlocked():
     y = 0
     while y == 0:
@@ -88,8 +103,11 @@ def homepageunlocked():
                 exit()
         keys = pygame.key.get_pressed()
         screen.fill("black")
-        if keys[pygame.K_x]:
-            level5()
+        screen.blit(homepageunlockedtext1, (10, 200))
+        screen.blit(homepageunlockedtext2, (165, 350))
+        screen.blit(shieldunlocktext2, (165,500))
+        if keys[pygame.K_z]:
+            homepage()
             y += 1
         pygame.display.update()
         clock.tick(FPS)
@@ -105,7 +123,7 @@ def level5end():
         screen.blit(level2endtext2, (165, 400))
         screen.blit(level5endtext1, (165, 100))
         if keys[pygame.K_x]:
-            level5()
+            homepageunlocked()
             y += 1
         pygame.display.update()
         clock.tick(FPS)
