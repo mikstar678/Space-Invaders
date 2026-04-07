@@ -57,11 +57,30 @@ shield_img = pygame.transform.scale(shield_img, (80,65))
 BIGALIEN = pygame.image.load("Graphics/BIGALIEN.png").convert_alpha()
 BIGALIEN = pygame.transform.scale(BIGALIEN, (80, 40))
 
+# ======== HOMEPAGE STUFF =========
+homepagett = font.render("HOMEPAGE", False, (255,0,0))
+hpselect1 = font.render("1  Play", False, (255,0,0))
+hpselect2 = font.render("2  Stats   STILL PENDING", False, (255,0,0))
+hpselect3 = font.render("3  GAME   MANUAL", False, (255,0,0))
+hpselect4 = font.render("4  TIPS   AND   TRICKS", False, (255,0,0,))
+hpselect5 = font.render("5  Credits", False, (255,0,0))
+exitpg = font.render("Press   E   to   exit", False, (255,0,0))
+
+credittxt = font.render("CREDITS", False, (255,0,0))
+credittxt1 = font.render("CONCEPT   BY   MIKAIL AKAR", False, (255,0,0))
+credittxt2 = font.render("PROGRAMMED   BY   MIKAIL AKAR", False, (255,0,0))
+credittxt3 = font.render("GAME   TESTED   BY   FATIH   AKAR", False, (255,0,0))
+credittxt4 = font.render("GAME   TESTED   BY   BURCU   AKAR", False, (255,0,0))
+credittxt5 = font.render("SPECIAL   MENTIONS", False, (255,0,0))
+credittxt6 = font.render("1")
+
+
 one = font.render('1',False, (255,0,0))
 two = font.render('2',False, (255,0,0))
 three = font.render('3',False, (255,0,0))
 four = font.render('4',False, (255,0,0))
 five = font.render('5',False, (255,0,0))
+
 SISTARTTEXT = font.render('SPACE INVADERS', False, (255, 0, 0))
 SISTARTTEXT2 = font.render('SHOOT ALIEN   TO   START', False, (255,0,0))
 level1endtext1 = font.render('LEVEL   1   C LE A R E D  !', False, (255,0,0))
@@ -71,6 +90,7 @@ level2endtext2 = font.render('Press   x    to  continue', False, (255,0,0))
 level3endtext1 = font.render('LEVEL   3   C LE A R E D  !', False, (255,0,0))
 level4endtext1 = font.render('LEVEL   4   C LE A R E D  !', False, (255,0,0))
 level5endtext1 = font.render('LEVEL   5   C LE A R E D  !', False, (255,0,0))
+
 shieldunlocktext1 = font.render('SHIELD   UNLOCKED', False, (255,0,0))
 shieldunlocktext2 = font.render("Press   z   to  continue", False, (255,0,0))
 shootbacktext = font.render("ALIEN   ATTACK   UNLOCKED", False, (255,0,0))
@@ -81,7 +101,8 @@ yourbad = font.render("YOU   DIED", False, (255,0,0))
 yourbad2 = font.render("Press   Z   TO RESTART", False, (255,0,0))
 leveltext = font.render('LEVEL ', False, (255,5,0))
 leveltext = pygame.transform.scale(leveltext, (100,40))
-def homepage():
+
+def page5():
     y = 0
     while y == 0:
         for event in pygame.event.get():
@@ -90,7 +111,34 @@ def homepage():
                 exit()
         keys = pygame.key.get_pressed()
         screen.fill("black")
-        if keys[pygame.K_p]:
+        if keys[pygame.K_z]:
+            homepage0()
+            y += 1
+        pygame.display.update()
+        clock.tick(FPS)
+def page1():
+    print("hello")
+def homepage0():
+    y = 0
+    while y == 0:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        keys = pygame.key.get_pressed()
+        screen.fill("black")
+        screen.blit(exitpg, (10, 625))
+        screen.blit(homepagett, (10,0))
+        screen.blit(hpselect1, (10, 85))
+        screen.blit(hpselect2, (10, 135))
+        screen.blit(hpselect3, (10, 185))
+        screen.blit(hpselect4, (10,235))
+        screen.blit(hpselect5, (10, 285))
+        if keys[pygame.K_e]:
+            y += 1
+            exit()
+        if keys[pygame.K_1]:
+            page1()
             y += 1
         pygame.display.update()
         clock.tick(FPS)
@@ -107,7 +155,7 @@ def homepageunlocked():
         screen.blit(homepageunlockedtext2, (165, 350))
         screen.blit(shieldunlocktext2, (165,500))
         if keys[pygame.K_z]:
-            homepage()
+            homepage0()
             y += 1
         pygame.display.update()
         clock.tick(FPS)
@@ -336,7 +384,7 @@ def level5():
                     for alien in alien_list:
                         alien.y -= 30
 
-        if killcount == 2:
+        if killcount == 1:
             level5end()
             lvl5 += 1
 
@@ -554,7 +602,7 @@ def level4():
                     for alien in alien_list:
                         alien.y -= 30
 
-        if killcount == 2:
+        if killcount == 1:
             level4end()
             lvl3 += 1
 
@@ -770,7 +818,7 @@ def level3():
                     for alien in alien_list:
                         alien.y -= 30
 
-        if killcount == 2:
+        if killcount == 1:
             level3end()
             lvl3 += 1
 
@@ -840,7 +888,7 @@ def level2():
     GOODGUYSPEED = 4
     killcount = 0
     FPS = 60
-    MOVEON = 2
+    MOVEON = 1
     # Alien Generation
     PurpleBaddies = []
     startxp = 107
@@ -1000,7 +1048,7 @@ def level1end():
 
 
 def level1():
-    MOVEON = 2
+    MOVEON = 1
     GoodGuyrect = GoodGuy.get_rect(topleft=(0, 670))
     PurpleBaddie1rect = PurpleBaddie1.get_rect(midtop=(107,105))
     PurpleBaddie2rect = PurpleBaddie1.get_rect(midtop=(169,105))
