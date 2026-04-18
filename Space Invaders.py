@@ -4,8 +4,25 @@ pygame.init()
 clock = pygame.time.Clock()
 WIDTH, HEIGHT = 800, 700
 FPS = 60
-
+font = pygame.font.Font("Font/ARCADECLASSIC.ttf", 50)
 score = 0
+scoretxt = font.render(str(score), False, (255,0,0))
+scoreword = font.render("score", False, (255,0,0))
+def addten():
+    global score
+    score += 10
+    global scoretxt
+    scoretxt = font.render(str(score),False, (255,0,0))
+def addtwenty():
+    global score
+    score += 20
+    global scoretxt
+    scoretxt = font.render(str(score),False, (255,0,0))
+def addthirty():
+    global score
+    score += 30
+    global scoretxt
+    scoretxt = font.render(str(score),False, (255,0,0))
 level = 6
 def st7():
     global level
@@ -88,6 +105,19 @@ credittxt4 = font.render("GAME   TESTED   BY   BURCU   AKAR", False, (255,0,0))
 credittxt5 = font.render("SPECIAL   MENTIONS", False, (255,0,0))
 credittxt6 = font.render("THANK   YOU   FOR   PLAYING  !", False, (255,0,0))
 
+gamemanualtext1 = font.render("GAME   MANUAL", False, (255,0,0))
+gamemanualtext2 = font.render("PRESS   F   TO   RETURN   TO   HOMEPAGE", False, (255,0,0))
+gamemanualtext3 = font.render("W   =   SHOOT", False, (255,0,0))
+gamemanualtext4 = font.render("A   =   MOVE   LEFT", False, (255,0,0))
+gamemanualtext5 = font.render("D   =   MOVE   RIGHT", False, (255,0,0))
+gamemanualtext6 = font.render("E   =   EXIT", False, (255,0,0))
+gamemanualtext7 = font.render("H   =   HOMEPAGE", False, (255,0,0))
+
+tanttext1 = font.render("TIPS   AND   TRICKS", False, (255,0,0))
+tanttext2 = font.render(" 1. TRY   AND   KEEP   YOUR", False, (255,0,0))
+tanttext22 = font.render("BUNKERS   UNDAMAGED", False, (255,0,0))
+tanttext3 = font.render("2. THE   MYSTERY   RED   ALIEN", False, (255,0,0))
+tanttext32 = font.render("GIVES   BONUS   POINTS", False, (255,0,0))
 
 one = font.render('1',False, (255,0,0))
 two = font.render('2',False, (255,0,0))
@@ -120,6 +150,8 @@ yourbad = font.render("YOU   DIED", False, (255,0,0))
 yourbad2 = font.render("Press   Z   TO RESTART", False, (255,0,0))
 leveltext = font.render('LEVEL ', False, (255,5,0))
 leveltext = pygame.transform.scale(leveltext, (100,40))
+GRB1 = font.render("Graphics   Updated  !", False, (255,0,0))
+GRB2 = font.render("Enjoy   Better   Graphics  !", False, (255,0,0))
 
 def page5():
     y = 0
@@ -143,6 +175,62 @@ def page5():
         clock.tick(FPS)
 def page1():
     print("hello")
+def Graphics_boost2():
+    y = 0
+    while y == 0:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        keys = pygame.key.get_pressed()
+        screen.fill("black")
+        screen.blit(GRB2, (100, 400))
+        screen.blit(GRB1, (180, 100))
+        screen.blit(level1endtext2, (165,500))
+        if keys[pygame.K_x]:
+            level7()
+            y += 1
+        pygame.display.update()
+        clock.tick(FPS)
+def Graphics_boost1():
+    y = 0
+    while y == 0:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        keys = pygame.key.get_pressed()
+        screen.fill("black")
+        screen.blit(GRB2, (100, 400))
+        screen.blit(GRB1, (180, 100))
+        screen.blit(level1endtext2, (165,500))
+        if keys[pygame.K_x]:
+            level6()
+            y += 1
+        pygame.display.update()
+        clock.tick(FPS)
+def page3_0():
+    y = 0
+    while y == 0:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        keys = pygame.key.get_pressed()
+        screen.fill("black")
+        screen.blit(gamemanualtext1, (10,10))
+        screen.blit(gamemanualtext2, (10,100))
+        screen.blit(gamemanualtext3, (10,200))
+        screen.blit(gamemanualtext4, (10,300))
+        screen.blit(gamemanualtext5, (10,400))
+        screen.blit(gamemanualtext6, (10,500))
+        screen.blit(gamemanualtext7, (10,600))
+        if keys[pygame.K_f]:
+            homepage0()
+            y += 1
+        pygame.display.update()
+        clock.tick(FPS)
+
 def homepage0():
     y = 0
     global level
@@ -165,14 +253,17 @@ def homepage0():
             exit()
         if keys[pygame.K_1]:
             if level == 6:
-                level6()
+                Graphics_boost1()
                 y += 1
             if level == 7:
-                level7()
+                Graphics_boost2()
                 y += 1
         if keys[pygame.K_5]:
             page5()
             y += 1
+        if keys[pygame.K_3]:
+            page3_0()
+            y+=1
         pygame.display.update()
         clock.tick(FPS)
 def homepageunlocked():
@@ -332,13 +423,30 @@ def level7():
                     break
 
             # Alien collision
-            for alien_list in [PurpleBaddies, GreenBaddies, RedBaddies]:
+            for alien_list in [PurpleBaddies]:
                 for alien in alien_list[:]:
                     if alien.colliderect(bullet):
                         bullets.remove(bullet)
                         alien_list.remove(alien)
                         killcount += 1
+                        addthirty()
                         break
+                for alien_list in [GreenBaddies]:
+                    for alien in alien_list[:]:
+                        if alien.colliderect(bullet):
+                            bullets.remove(bullet)
+                            alien_list.remove(alien)
+                            killcount += 1
+                            addtwenty()
+                            break
+                for alien_list in [RedBaddies]:
+                    for alien in alien_list[:]:
+                        if alien.colliderect(bullet):
+                            bullets.remove(bullet)
+                            alien_list.remove(alien)
+                            killcount += 1
+                            addten()
+                            break
                 else:
                     continue
                 break
@@ -394,6 +502,8 @@ def level7():
         screen.blit(GoodGuy, GoodGuyrect)
         screen.blit(leveltext, (10, 0))
         screen.blit(seven, (110, 0))
+        screen.blit(scoretxt, (350, 0))
+        screen.blit(scoreword, (200, 0))
 
         # === Alien movement (unchanged) ===
         badmove1 += 1
@@ -568,13 +678,30 @@ def level6():
                     break
 
             # Alien collision
-            for alien_list in [PurpleBaddies, GreenBaddies, RedBaddies]:
+            for alien_list in [PurpleBaddies]:
                 for alien in alien_list[:]:
                     if alien.colliderect(bullet):
                         bullets.remove(bullet)
                         alien_list.remove(alien)
                         killcount += 1
+                        addthirty()
                         break
+                for alien_list in [GreenBaddies]:
+                    for alien in alien_list[:]:
+                        if alien.colliderect(bullet):
+                            bullets.remove(bullet)
+                            alien_list.remove(alien)
+                            killcount += 1
+                            addtwenty()
+                            break
+                for alien_list in [RedBaddies]:
+                    for alien in alien_list[:]:
+                        if alien.colliderect(bullet):
+                            bullets.remove(bullet)
+                            alien_list.remove(alien)
+                            killcount += 1
+                            addten()
+                            break
                 else:
                     continue
                 break
@@ -630,6 +757,8 @@ def level6():
         screen.blit(GoodGuy, GoodGuyrect)
         screen.blit(leveltext, (10, 0))
         screen.blit(six, (110, 0))
+        screen.blit(scoretxt, (350, 0))
+        screen.blit(scoreword, (200, 0))
 
         # === Alien movement (unchanged) ===
         badmove1 += 1
@@ -802,13 +931,30 @@ def level5():
                     break
 
             # Alien collision
-            for alien_list in [PurpleBaddies, GreenBaddies, RedBaddies]:
+            for alien_list in [PurpleBaddies]:
                 for alien in alien_list[:]:
                     if alien.colliderect(bullet):
                         bullets.remove(bullet)
                         alien_list.remove(alien)
                         killcount += 1
+                        addthirty()
                         break
+                for alien_list in [GreenBaddies]:
+                    for alien in alien_list[:]:
+                        if alien.colliderect(bullet):
+                            bullets.remove(bullet)
+                            alien_list.remove(alien)
+                            killcount += 1
+                            addtwenty()
+                            break
+                for alien_list in [RedBaddies]:
+                    for alien in alien_list[:]:
+                        if alien.colliderect(bullet):
+                            bullets.remove(bullet)
+                            alien_list.remove(alien)
+                            killcount += 1
+                            addten()
+                            break
                 else:
                     continue
                 break
@@ -864,6 +1010,8 @@ def level5():
         screen.blit(GoodGuy, GoodGuyrect)
         screen.blit(leveltext, (10, 0))
         screen.blit(five, (110, 0))
+        screen.blit(scoretxt, (350, 0))
+        screen.blit(scoreword, (200, 0))
 
         # === Alien movement (unchanged) ===
         badmove1 += 1
@@ -1023,13 +1171,30 @@ def level4():
                     break
 
             # Alien collision
-            for alien_list in [PurpleBaddies, GreenBaddies, RedBaddies]:
+            for alien_list in [PurpleBaddies]:
                 for alien in alien_list[:]:
                     if alien.colliderect(bullet):
                         bullets.remove(bullet)
                         alien_list.remove(alien)
                         killcount += 1
+                        addthirty()
                         break
+                for alien_list in [GreenBaddies]:
+                    for alien in alien_list[:]:
+                        if alien.colliderect(bullet):
+                            bullets.remove(bullet)
+                            alien_list.remove(alien)
+                            killcount += 1
+                            addtwenty()
+                            break
+                for alien_list in [RedBaddies]:
+                    for alien in alien_list[:]:
+                        if alien.colliderect(bullet):
+                            bullets.remove(bullet)
+                            alien_list.remove(alien)
+                            killcount += 1
+                            addten()
+                            break
                 else:
                     continue
                 break
@@ -1083,6 +1248,8 @@ def level4():
         screen.blit(GoodGuy, GoodGuyrect)
         screen.blit(leveltext, (10, 0))
         screen.blit(four, (110, 0))
+        screen.blit(scoretxt, (350, 0))
+        screen.blit(scoreword, (200, 0))
         # === Alien movement ===
         badmove1 += 1
         if badmove1 % 120 == 0:
@@ -1238,13 +1405,30 @@ def level3():
                     break
 
             # Alien collision
-            for alien_list in [PurpleBaddies, GreenBaddies, RedBaddies]:
+            for alien_list in [PurpleBaddies]:
                 for alien in alien_list[:]:
                     if alien.colliderect(bullet):
                         bullets.remove(bullet)
                         alien_list.remove(alien)
                         killcount += 1
+                        addthirty()
                         break
+                for alien_list in [GreenBaddies]:
+                    for alien in alien_list[:]:
+                        if alien.colliderect(bullet):
+                            bullets.remove(bullet)
+                            alien_list.remove(alien)
+                            killcount += 1
+                            addtwenty()
+                            break
+                for alien_list in [RedBaddies]:
+                    for alien in alien_list[:]:
+                        if alien.colliderect(bullet):
+                            bullets.remove(bullet)
+                            alien_list.remove(alien)
+                            killcount += 1
+                            addten()
+                            break
                 else:
                     continue
                 break
@@ -1298,6 +1482,8 @@ def level3():
         screen.blit(GoodGuy, GoodGuyrect)
         screen.blit(leveltext, (10, 0))
         screen.blit(three, (110, 0))
+        screen.blit(scoretxt, (350, 0))
+        screen.blit(scoreword, (200, 0))
 
         # === Alien movement ===
         badmove1 += 1
@@ -1462,6 +1648,7 @@ def level2():
                     bullets.remove(bullet)
                     PurpleBaddies.remove(alien)
                     killcount += 1
+                    addthirty()
                     break
             else:
                 for alien in GreenBaddies[:]:
@@ -1469,6 +1656,7 @@ def level2():
                         bullets.remove(bullet)
                         GreenBaddies.remove(alien)
                         killcount += 1
+                        addtwenty()
                         break
                 else:
                     for alien in RedBaddies[:]:
@@ -1476,6 +1664,7 @@ def level2():
                             bullets.remove(bullet)
                             RedBaddies.remove(alien)
                             killcount += 1
+                            addten()
                             break
 
         #Alien Drawing -> bullet drawing
@@ -1491,6 +1680,8 @@ def level2():
         screen.blit(GoodGuy,GoodGuyrect)
         screen.blit(leveltext, (10,0))
         screen.blit(two, (110, 0))
+        screen.blit(scoretxt, (350, 0))
+        screen.blit(scoreword, (200, 0))
 
         #Alien Movement
         badmove1 += 1
@@ -1632,97 +1823,121 @@ def level1():
             elif PurpleBaddie1rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie1rect.x += 99999
             elif PurpleBaddie2rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie2rect.x += 99999
             elif PurpleBaddie3rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie3rect.x += 99999
             elif PurpleBaddie4rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie4rect.x += 99999
             elif PurpleBaddie5rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie5rect.x += 99999
             elif PurpleBaddie6rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie6rect.x += 99999
             elif PurpleBaddie7rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie7rect.x += 99999
             elif PurpleBaddie8rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie8rect.x += 99999
             elif PurpleBaddie9rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie9rect.x += 99999
             elif PurpleBaddie10rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie10rect.x += 99999
             elif PurpleBaddie11rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie11rect.x += 99999
             elif PurpleBaddie12rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie12rect.x += 99999
             elif PurpleBaddie13rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie13rect.x += 99999
             elif PurpleBaddie14rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie14rect.x += 99999
             elif PurpleBaddie15rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie15rect.x += 99999
             elif PurpleBaddie16rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie16rect.x += 99999
             elif PurpleBaddie17rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie17rect.x += 99999
             elif PurpleBaddie18rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie18rect.x += 99999
             elif PurpleBaddie19rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie19rect.x += 99999
             elif PurpleBaddie20rect.colliderect(bullet):
                 bullets.remove(bullet)
                 killcount += 1
+                addthirty()
                 PurpleBaddie20rect.x += 99999
             for alien in GreenBaddies[:]:
                 if alien.colliderect(bullet):
                     bullets.remove(bullet)
                     GreenBaddies.remove(alien)
                     killcount += 1
+                    addtwenty()
                     break
             for alien in RedBaddies[:]:
                 if alien.colliderect(bullet):
                     bullets.remove(bullet)
                     RedBaddies.remove(alien)
                     killcount += 1
+                    addten()
                     break
 
         screen.fill("black")
+        screen.blit(scoretxt, (350,0))
+        screen.blit(scoreword, (200,0))
         screen.blit(GoodGuy, GoodGuyrect)
         screen.blit(PurpleBaddie1, PurpleBaddie1rect)
         screen.blit(PurpleBaddie1, PurpleBaddie2rect)
