@@ -69,7 +69,7 @@ Now that your computer is ready to run the code you have to download it !!!
 
 #### WINDOWS COMPUTERS FOLLOW THIS GUIDE
 
-READ ALL OF THIS BEFORE DOING IT 
+READ ALL OF THIS BEFORE DOING IT, YOU CAN ALWAYS COME BACK :)
 
 Go back to the top of this page and click the green '<>Code' icon at the top
 
@@ -86,3 +86,40 @@ click on the option called 'extract all'
 now click ok and wait for the file to download.
 
 inside 'downloads' you should now see 2 files with the space-invaders-main name, that is ok
+
+Ignore the file witha little zip on it, click on the one wittout a zip
+
+you may have to do a double click by clicking twice really fast but thats ok
+
+then double click again on the space-invaders-main folder that shows up
+
+it will now bring you to a few files. 
+
+click on the one titled 'main' 
+
+AND TADA!!!! It may have taken long but we got there and now you can enjoy my space invaders game :)
+
+#### APPLE COMPUTERS / MACS / MACBOOKS FOLLOW THIS GUIDE
+
+READ ALL OF THIS BEFORE DOING IT, YOU CAN ALWAYS COME BACK :)
+
+Go back to the top of this page and click the green '<>Code' icon at the top
+
+It should open a small box, at the bottom of this box you will see an option to 'Download ZIP'
+
+Click on it
+
+once the download has finished click on the blue and white face icon titled 'finder' at the bottom left of the screen
+
+on the left click on downloads
+
+then click on the folder named 'Space-invaders-main'
+
+click on it agin
+
+then click on the file titled main 
+
+AND TADA!!!! It may have taken long but we got there and now you can enjoy my space invaders game :)
+
+
+
