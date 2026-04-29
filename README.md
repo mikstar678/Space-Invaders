@@ -75,4 +75,14 @@ Go back to the top of this page and click the green '<>Code' icon at the top
 
 It should open a small box, at the bottom of this box you will see an option to 'Download ZIP'
 
+Click on it and you will see a file download, once it has finished downloading open the 'file explorer' app at the bottom of the screen 
 
+on the left there will be a 'Downloads' bit Click on this and then look for 'Space-Invaders-main' 
+
+now click on the file with the button on the RIGHT side of the mouse or trackpad. it will show a small box 
+
+click on the option called 'extract all' 
+
+now click ok and wait for the file to download.
+
+inside 'downloads' you should now see 2 files with the space-invaders-main name, that is ok
