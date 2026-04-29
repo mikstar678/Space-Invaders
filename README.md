@@ -26,11 +26,17 @@ You have to install pygame you can also do this on any computer but the steps ar
 
 #### WINDOWS COMPUTERS USE THIS GUIDE 
 Open up your computer and at the bottom there should be a bit saying 'search' 
+
 click on that 
+
 then type 'cmd' (without the speech marks) and hit the enter key on the keyboard
+
 it should come up with a black box with the words 'command promt' at the top followed by some text in the top
+
 Now click on the box and copy and paste this into the box (without the speech marks) 'python3 -m pip install -U pygame --user'
+
 then hit the enter key on the keyboard
+
 now wait for it to finish and once its stopped loading count to 10 and close the black box by just pressing the red x in the top right corner.
 
 #### APPLE COMPUTERS / MACS / MACBOOKS USE THIS GUIDE 
