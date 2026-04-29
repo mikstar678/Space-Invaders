@@ -16,6 +16,7 @@ You can also install python fropm the microsoft store on windows only
 
 ### STEP 2
 You have to install pygame you can also do this on any computer but the steps are a little different
+
 +EXPLANATION ON WHAT PYGAME IS AND WHY YOU NEED IT+
  Now our computer understands German (python) however it only knows the formal speech and not any slang. and as most people will know speaking fromally all the time is hard. So now think of pygame as german slang.
  i coded my code using german slang but it doesnt understand it yet. Now pygame is like german slang, still german but an extension to the language. Same as Python by installing pygame is like ''teaching'' the computer german slang.
