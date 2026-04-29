@@ -65,6 +65,14 @@ once it has finished loading count to 10 and close the black box by pressing the
 
 ## STEP 3
 
-Now that your computer is ready to run the code 
+Now that your computer is ready to run the code you have to download it !!!
+
+#### WINDOWS COMPUTERS FOLLOW THIS GUIDE
+
+READ ALL OF THIS BEFORE DOING IT 
+
+Go back to the top of this page and click the green '<>Code' icon at the top
+
+It should open a small box, at the bottom of this box you will see an option to 'Download ZIP'
 
 
