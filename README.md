@@ -5,7 +5,7 @@ Sorry that i dont have a website yet but its coming soon!
 
 ## How to play my game 
 
-### STEP 1 
+## STEP 1 
 You have to install python you can do this on any computer however sorry phone users wont be able to play :(
 + EXPLANATION ON WHAT PYTHON IS AND WHY YOU NEED IT +
   python is the computer language i coded my game in, think of it like german, your computer speaks English and doesn't understand German, Python is the german language and by installing it you are ''teaching'' the computer german.
@@ -14,7 +14,7 @@ You install python from here - https://www.python.org/downloads/ use the tools p
 You can also install python fropm the microsoft store on windows only 
 
 
-### STEP 2
+## STEP 2
 You have to install pygame you can also do this on any computer but the steps are a little different
 
 +EXPLANATION ON WHAT PYGAME IS AND WHY YOU NEED IT+
@@ -41,13 +41,30 @@ now wait for it to finish and once its stopped loading count to 10 and close the
 
 #### APPLE COMPUTERS / MACS / MACBOOKS USE THIS GUIDE 
 Open up your computer and at the bottom usually on the bottom left however it can be anywhere at the bottom look for a icon with a 3x3 square of multi coloured icons, labelled 'launchpad' 
+
 you can see names by hovering over the icons.
+
 once you find it click on the icon.
+
 Once you have clicked on it the screen should fill with all your apps. Ignore all the apps and look at the top for the search bar.
+
 it should be a recangle with the word 'search' on it.
+
 click on the search bar and type the word 'Terminal' and you should see the other apps dissapear and only one be left.
+
 It should be a black box with a wierd arrow looking thing and a line at the top. 
+
 click on that icon
-it should open a back box with 
+
+it should open a black box with some text in it
+
+ignore the text and copy this command (without the speech marks) 'python3 -m pip install -U pygame --user' and hit enter on the keyboard. 
+
+once it has finished loading count to 10 and close the black box by pressing the red x in the corner.
+
+
+## STEP 3
+
+Now that your computer is ready to run the code 
 
 
