@@ -5,6 +5,24 @@ Sorry that i dont have a website yet but its coming soon!
 
 ## How to play my game 
 
+# Simple Path
+
+On the side of the page a option reading releases will appear, Click and the bit just under that reading 'Space Invaders game
+
+Then Under assets click space.invaders.zip
+
+and wait for the download.
+
+ON MAC : Just click on the folder and click the main and TADA!! Enjoy my game 
+
+ON WINDOWS : First go to file explorer app at the bottom and then click on 'Downloads' On the left
+
+There you will se the folder, click on the folder with the button  on the RIGHT of your mouse or trackpad and then select extract all, It will then open a screen saying select destination and extract files 
+
+ignore all that and just hit extract at the bottom. it will then open the game file. just click on main and TADA! Enjoy my space invaders game.
+
+# HARD path 
+
 ## STEP 1 
 You have to install python you can do this on any computer however sorry phone users wont be able to play :(
 + EXPLANATION ON WHAT PYTHON IS AND WHY YOU NEED IT +
